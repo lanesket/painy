@@ -1,5 +1,7 @@
 # Painy
 
+    Comments for this repository commits are written with Painy itself.
+
 ## Features
 
 - Painy is a simple tool which allows you to automatically generate commit messages via OpenAI API. It automatically check the changes in your repository and generate a commit message based on the changes.
@@ -21,17 +23,25 @@
 
 - (Recommended) Go to the folder with your repository and run the following command:
 
-```bash
-    painy
-```
+  - Add something to stage:
 
-- Or with the environment variable `OPENAI_API_KEY` set inplace:
+    ```bash
+        git add <files>
+    ```
 
-```bash
-    OPENAI_API_KEY=<your-openai-api-key> painy
-```
+  - Then use Painy:
 
-This will generate a commit message based on the staged changes in your repository.
+    ```bash
+        painy
+    ```
+
+  - Or with the environment variable `OPENAI_API_KEY` set inplace:
+
+    ```bash
+        OPENAI_API_KEY=<your-openai-api-key> painy
+    ```
+
+    This will generate a commit message based on the staged changes in your repository.
 
 - If you want to generate a commit message for all the changes in your repository, run the following command (this files must be registered in git before in order to have a diff to compare):
 
