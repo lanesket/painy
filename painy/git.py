@@ -15,3 +15,13 @@ def get_changes_staged_git() -> str:
     output = subprocess.check_output(["git", "diff", "--staged"], stderr=subprocess.STDOUT)
     changes = output.decode("utf-8").strip()
     return changes
+
+def commit(commit_message: str) -> None:
+    """
+    Commits the staged changes with the given commit message.
+    Used to commit the auto-generated commit message.
+    
+    Args:
+        commit_message (str): The commit message to use.
+    """
+    subprocess.check_output(["git", "commit", "-m", commit_message], stderr=subprocess.STDOUT)

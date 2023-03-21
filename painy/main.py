@@ -1,4 +1,6 @@
 from .comment import get_comment
+from .enums import Action
+from .git import commit
 import argparse
 import openai
 import os
@@ -17,13 +19,24 @@ def main():
         prog="Painy",
         description="A tool to help you write better commit messages."
     )
-   
-    parser.add_argument("--check-all", action="store_true")
+    
+    parser.add_argument("action", choices=["comment", "commit"], help="The action to perform")
+    parser.add_argument("--check-all", action="store_true", help="Check all files previously registered in git, not just staged ones")
+    
     args = parser.parse_args()
     
+    action = args.action if args.action is not None else Action.COMMENT.value
+    
     only_staged = not args.check_all
-    comment = get_comment(only_staged=only_staged)
-    print(comment)
+    
+    if action == Action.COMMENT.value:
+        comment = get_comment(only_staged=only_staged)
+        print(comment)
+    elif action == Action.COMMIT.value:
+        comment = get_comment(only_staged=only_staged)
+        print(f"Commit message: {comment}")
+        commit(comment)
+        
 
 if __name__ == "__main__":
     main()
