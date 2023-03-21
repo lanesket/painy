@@ -25,6 +25,12 @@
     painy
 ```
 
+- Or with the environment variable `OPENAI_API_KEY` set inplace:
+
+```bash
+    OPENAI_API_KEY=<your-openai-api-key> painy
+```
+
 This will generate a commit message based on the staged changes in your repository.
 
 - If you want to generate a commit message for all the changes in your repository, run the following command (this files must be registered in git before in order to have a diff to compare):
