@@ -37,6 +37,9 @@ def get_comment(only_staged: bool = True):
     else:
         try:
             changes_str = get_changes_staged_git()
+            
+            if not changes_str:
+                return "No changes staged."
         except subprocess.CalledProcessError:
             return "Error. Are you in a git repository?"
         
