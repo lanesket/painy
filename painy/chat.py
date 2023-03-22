@@ -5,7 +5,7 @@ import os
 
 
 MODEL_NAME = os.getenv(key="OPENAI_MODEL_NAME", default="gpt-3.5-turbo")
-MAX_LENGTH = os.getenv(key="OPENAI_MODEL_INPUT_LENGTH", default=4097)
+MAX_LENGTH = int(os.getenv(key="OPENAI_MODEL_INPUT_LENGTH", default=4097))
 MAX_MESSAGES = 40
 
 
