@@ -13,7 +13,7 @@ comment_prompt = """
 
 def get_comment(staged: bool = True):
     try:
-        changed_files = get_changed_files_git(staged=staged)
+        changed_files = get_changed_files(staged=staged)
     except subprocess.CalledProcessError:
         return "Error. Are you in a git repository?"
     
@@ -30,7 +30,7 @@ def get_comment(staged: bool = True):
     diffs = []
     
     for file in changed_files:
-        diff = get_file_changes_git(file)
+        diff = get_file_changes(file)
         diffs.append(diff)
     
     diff_str = "\n".join(diffs)
