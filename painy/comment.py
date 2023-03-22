@@ -11,39 +11,31 @@ comment_prompt = """
     The shorter the comment, the better, but the maximum length is 200 characters.
 """
 
-def get_comment(only_staged: bool = True):
-    if not only_staged:
-        try:
-            changed_files = get_changed_files_git()
-        except subprocess.CalledProcessError:
-            return "Error. Are you in a git repository?"
-        
-        if len(changed_files) == 0:
-            return "No files changed."
-        
-        changes = []
-        
-        valid_extensions = get_valid_extensions()
-        
-        changed_files = [file for file in changed_files if file != '']
-        changed_files = [file for file in changed_files if file.split(".")[-1] in valid_extensions]
-        
-        print("Changed files: " + str(changed_files))
-        
-        for file in changed_files:
-            changes.append(get_file_changes_git(file))
-        
-        changes_str = "\n".join(changes)
-    else:
-        try:
-            changes_str = get_changes_staged_git()
-            
-            if not changes_str:
-                return "No changes staged."
-        except subprocess.CalledProcessError:
-            return "Error. Are you in a git repository?"
+def get_comment(staged: bool = True):
+    try:
+        changed_files = get_changed_files_git(staged=staged)
+    except subprocess.CalledProcessError:
+        return "Error. Are you in a git repository?"
+    
+    valid_extensions = get_valid_extensions()
+    
+    changed_files = [file for file in changed_files if file != '']
+    changed_files = [file for file in changed_files if f".{file.split('.')[-1]}" in valid_extensions]
+    
+    if len(changed_files) == 0:
+        return "No files changed."
+    
+    print("Changed files: " + str(changed_files))
+    
+    diffs = []
+    
+    for file in changed_files:
+        diff = get_file_changes_git(file)
+        diffs.append(diff)
+    
+    diff_str = "\n".join(diffs)
         
     model = Model(purpose_prompt=comment_prompt)
-    response = model.get_response(prompt=changes_str)
+    response = model.get_response(prompt=diff_str)
     
     return response

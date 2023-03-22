@@ -27,13 +27,13 @@ def main():
     
     action = args.action if args.action is not None else Action.COMMENT.value
     
-    only_staged = not args.check_all
+    staged = not args.check_all
     
     if action == Action.COMMENT.value:
-        comment = get_comment(only_staged=only_staged)
+        comment = get_comment(staged=staged)
         print(comment)
     elif action == Action.COMMIT.value:
-        comment = get_comment(only_staged=only_staged)
+        comment = get_comment(staged=staged)
         print(f"Commit message: {comment}")
         commit(comment)
         

@@ -1,8 +1,14 @@
 import subprocess
 
 
-def get_changed_files_git() -> list:
-    output = subprocess.check_output(["git", "diff", "--name-only", "HEAD"], stderr=subprocess.STDOUT)
+def get_changed_files_git(staged=False) -> list:
+    cmd = ["git", "diff", "--name-only"]
+    
+    if staged:
+        cmd += ["--staged"]
+    
+    output = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
+    
     files = output.decode("utf-8").strip().split("\n")
     return files
 
