@@ -6,6 +6,8 @@
 
 - Painy is a simple tool which allows you to automatically generate commit messages via OpenAI API. It automatically check the changes in your repository and generate a commit message based on the changes.
 
+- Works well with Jupyter Notebooks (`.ipynb` files) by using `nbdime` for diffing.
+
 ## Installation
 
 - Install the package via pip:
@@ -52,5 +54,5 @@
 - If you want to generate a commit message for all the changes in your repository, run the following command (this files must be registered in git before in order to have a diff to compare):
 
 ```bash
-    painy --check-all
+    painy comment --check-all
 ```
