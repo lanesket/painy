@@ -8,7 +8,7 @@ with open("README.md", "r", encoding="utf-8") as f:
 
 setup(
     name="Painy",
-    version="0.1.2",
+    version="0.1.3",
     description="",
     long_description=long_description,
     long_description_content_type="text/markdown",
