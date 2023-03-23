@@ -8,6 +8,12 @@
 
 - Works well with Jupyter Notebooks (`.ipynb` files) by using `nbdime` for diffing.
 
+## Prerequisites
+
+- OpenAI API key. You can get one [here](https://platform.openai.com).
+
+- Python 3.7.1 or higher and `pip` package manager.
+
 ## Installation
 
 - Install the package via pip:

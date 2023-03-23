@@ -15,6 +15,7 @@ setup(
     author="Raevskiy Rudolf",
     url="https://github.com/lanesket/painy",
     packages=find_packages(),
+    python_requires=">=3.7.1",
     install_requires=requirements,
     classifiers=[
         "Programming Language :: Python :: 3",
