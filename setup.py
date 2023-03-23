@@ -8,7 +8,7 @@ with open("README.md", "r", encoding="utf-8") as f:
 
 setup(
     name="Painy",
-    version="0.1.3",
+    version="0.1.4",
     description="",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -21,8 +21,10 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    
-    
+    include_package_data=True,
+    package_data={
+        'painy': ['p_extensions.txt']
+    },
     entry_points={
         'console_scripts': [
             "painy = painy.main:main"
