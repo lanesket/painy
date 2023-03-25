@@ -58,7 +58,6 @@ def get_changes_staged() -> str:
 
 def get_diff_str(changed_files: List[str]) -> str:
     if len(changed_files) == 0:
-        print(1)
         raise NoChangesException()
     
     diffs = []
