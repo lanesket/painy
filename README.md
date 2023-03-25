@@ -61,11 +61,11 @@
 
 - Interactive mode:
 
-    ```bash
-        painy <comment|commit> -i
-    ```
+```bash
+    painy <comment|commit> -i
+```
 
-    This will generate a commit message based on the staged changes in your repository and will ask you if you want to regenerate the commit message.
+This will generate a commit message based on the staged changes in your repository and will ask you if you want to regenerate the commit message.
 
 - If you want to generate a commit message for all the changes in your repository, run the following command (this files must be registered in git before in order to have a diff to compare):
 
