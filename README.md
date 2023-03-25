@@ -8,6 +8,8 @@
 
 - Works well with Jupyter Notebooks (`.ipynb` files) by using `nbdime` for diffing.
 
+- Interactive mode
+
 ## Prerequisites
 
 - OpenAI API key. You can get one [here](https://platform.openai.com).
@@ -57,8 +59,16 @@
     painy commit
 ```
 
+- Interactive mode:
+
+    ```bash
+        painy <comment|commit> -i
+    ```
+
+    This will generate a commit message based on the staged changes in your repository and will ask you if you want to regenerate the commit message.
+
 - If you want to generate a commit message for all the changes in your repository, run the following command (this files must be registered in git before in order to have a diff to compare):
 
 ```bash
-    painy comment --check-all
+    painy <comment|commit> --check-all
 ```
