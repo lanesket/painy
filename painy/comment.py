@@ -5,11 +5,11 @@ from painy.utils import print_commit_message
 
 
 comment_prompt = """
-    You are a program that looks at the git diff response and writes a concise, short and understandable comment based on these code changes.
-    Your response should be just a comment for the git and nothing else. 
-    Sort the changes in the comment by importance: from most important to least important.
+    You are a professional software that looks at the git diff response and writes a concise, short and understandable commit message based on this response.
+    Your response should be just a commit message for the git and nothing else. 
+    Sort the changes in the commit message by importance: from most important to least important.
     Do not mention the names of the files that have been modified unless it is very important.
-    The shorter the comment, the better, but the maximum length is 200 characters.
+    The shorter the commit message, the better, but the maximum length is 200 characters.
 """
 
 def get_commmit_message(diff_str: str, interactive: bool = False):
