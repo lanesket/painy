@@ -1,6 +1,7 @@
-from .git import *
-from .chat import Model
-from .utils import get_package_path, get_valid_extensions
+from painy.git import *
+from painy.chat import Model
+from painy import console
+from painy.utils import print_commit_message
 
 
 comment_prompt = """
@@ -11,31 +12,29 @@ comment_prompt = """
     The shorter the comment, the better, but the maximum length is 200 characters.
 """
 
-def get_comment(staged: bool = True):
-    try:
-        changed_files = get_changed_files(staged=staged)
-    except subprocess.CalledProcessError:
-        return "Error. Are you in a git repository?"
-    
-    valid_extensions = get_valid_extensions()
-    
-    changed_files = [file for file in changed_files if file != '']
-    changed_files = [file for file in changed_files if f".{file.split('.')[-1]}" in valid_extensions]
-    
-    if len(changed_files) == 0:
-        return "No files changed."
-    
-    print("Changed files: " + str(changed_files))
-    
-    diffs = []
-    
-    for file in changed_files:
-        diff = get_file_changes(file)
-        diffs.append(diff)
-    
-    diff_str = "\n".join(diffs)
-        
-    model = Model(purpose_prompt=comment_prompt)
-    response = model.get_response(prompt=diff_str)
+def get_commmit_message(diff_str: str, interactive: bool = False):
+    with console.status(status="Generating commit message...", spinner='aesthetic'):
+        model = Model(purpose_prompt=comment_prompt)
+        response = model.get_response(prompt=diff_str)
     
     return response
+
+def comment_interactive(msg: str, diff_str: str) -> str:
+    """
+    Interactive mode for generating commit messages.
+    
+    Args:
+        msg (str): Already (first time) generated commit message
+    
+    Returns:
+        str: Final commit message
+    """
+    while True:
+        console.rule(characters="=", style="cyan")
+        option = console.input("Try another one? [green]y[/green]/[red]n[/red]: ")
+        
+        if option.lower() in ["y", "yes"]:
+            msg = get_commmit_message(diff_str)
+            print_commit_message(console, msg)
+        else:
+            return msg

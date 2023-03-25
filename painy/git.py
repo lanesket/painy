@@ -1,17 +1,29 @@
+from typing import List
 import subprocess
 import re
+from painy.utils import get_package_path, get_valid_extensions
+from painy.errors import *
 
 
-def get_changed_files(staged=False) -> list:
-    cmd = ["git", "diff", "--name-only"]
+def get_changed_files(staged=False) -> List[str]:
+    try:
+        cmd = ["git", "diff", "--name-only"]
+        
+        if staged:
+            cmd += ["--staged"]
+        
+        output = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
+        
+        changed_files = output.decode("utf-8").strip().split("\n")
+    except subprocess.CalledProcessError:
+        raise GitDiffException()
     
-    if staged:
-        cmd += ["--staged"]
+    valid_extensions = get_valid_extensions()
+     
+    changed_files = [file for file in changed_files if file != '']
+    changed_files = [file for file in changed_files if f".{file.split('.')[-1]}" in valid_extensions]
     
-    output = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
-    
-    files = output.decode("utf-8").strip().split("\n")
-    return files
+    return changed_files
 
 def get_ipynb_changes_staged(file_path: str) -> str:
     assert file_path.endswith(".ipynb")
@@ -43,6 +55,19 @@ def get_changes_staged() -> str:
     output = subprocess.check_output(["git", "diff", "--staged"], stderr=subprocess.STDOUT)
     changes = output.decode("utf-8").strip()
     return changes
+
+def get_diff_str(changed_files: List[str]) -> str:
+    if len(changed_files) == 0:
+        print(1)
+        raise NoChangesException()
+    
+    diffs = []
+    
+    for file in changed_files:
+        diff = get_file_changes(file)
+        diffs.append(diff)
+    
+    return "\n".join(diffs)
 
 def commit(commit_message: str) -> None:
     """
