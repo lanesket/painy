@@ -1,0 +1,5 @@
+{
+    "rules": [
+        "The shorter the commit message, the better, but the maximum length is <max_characters> characters."
+    ]
+}

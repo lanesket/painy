@@ -24,7 +24,7 @@ setup(
     ],
     include_package_data=True,
     package_data={
-        'painy': ['p_extensions.txt']
+        'painy': ['settings/*']
     },
     entry_points={
         'console_scripts': [

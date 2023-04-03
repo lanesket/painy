@@ -1,0 +1,1 @@
+Here's an examples of author commit messages. Observe the style and craft commit messages in a similar manner:
