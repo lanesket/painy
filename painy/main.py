@@ -35,6 +35,8 @@ def main():
     
     try:
         changed_files = get_changed_files(staged)
+        console.print(f"[green]Changed files:[/green] {', '.join(changed_files)}")
+        
         diff_str = get_diff_str(changed_files)
     except Exception as e:
         console.print(f"[red]{e}[/red]")

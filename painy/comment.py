@@ -1,64 +1,45 @@
 from painy.git import *
 from painy.chat import Model
 from painy import console
-from painy.utils import print_commit_message
+from painy.utils import print_commit_message, load_json, load_txt, process_rules
+from painy.errors import NoSettingException
 
 
-comment_prompt = """
-    You are a professional software that looks at the git diff response and writes a concise, short and understandable comment based on this response.
-    Your response should be just a short commit message for the git and nothing else. 
-    Sort the changes in the commit message by importance: from most important to least important.
-    Do not mention the names of the files that have been modified unless it is very important.
-    The shorter the commit message, the better, but the maximum length is 200 characters.
+def get_rules(config: dict):
+    rules_loaded = load_json("settings/rules.json")['rules']
+    rules_processed = process_rules(rules_loaded, config)
     
-    Here are examples for you. They are in format (git diff in `<git-diff>` and possible response commit messages for this git diff, separated by new lines and comma):
-    1)
-        `index 30f6c85..a16b8e9 100644
-        --- a/my_module.py
-        +++ b/my_module.py
-        @@ -1,3 +1,4 @@
-        +import math
+    rules_str = '\n\nFollow this rules/restrictions when writing commit messages:\n'
+    rules_str += '\n'.join([f'- {rule.strip()}' for rule in rules_processed])
+            
+    return rules_str
+   
+ 
+def get_prompt() -> str:
+    config = load_json("settings/config.json")
+    
+    prompt = load_txt('settings/prompt_comment_base.txt')
+    prompt += get_rules(config)
+    
+    if 'use_commit_history_style' in config and config['use_commit_history_style']:
+        max_num_commits = config['max_num_commits_style'] if 'max_num_commits_style' in config else 20
+        commit_history = get_commit_messsage_history()[:max_num_commits]
         
-        def square(x):
-        -    return x * x
-        +    return math.pow(x, 2)`   
-        
-    [
-        "Refactor square function. Use math.pow instead of multiplication.",
-        "Refactor square function.",
-        "Use pow instead of multiplication."
-    ]
+        style_prompt = load_txt('settings/prompt_commit_style.txt')
+        prompt += '\n\n' + style_prompt + '\n'
+        prompt += '\n'.join([f'- {rule.strip()}' for rule in commit_history])
     
-    2) 
-        `index 9c59da1..f0c12f2 100644
-        --- a/my_module.py
-        +++ b/my_module.py
-        @@ -1,5 +1,8 @@
-        +from typing import List
-        +
-        def filter_even_numbers(numbers):
-        -    return [n for n in numbers if n % 2 == 0]
-        +    if not isinstance(numbers, List):
-        +        raise TypeError("numbers must be a list")
-        +    return [n for n in numbers if n % 2 == 0]`
-        
-    [
-        "Add input validation to filter_even_numbers function",
-        "Check if numbers is a list in filter_even_numbers function",
-        "Check if numbers is a list",
-        "Validation for filter_even_numbers function"
-    ]
-    
-    
-    
-"""
+    return prompt
+
 
 def get_commmit_message(diff_str: str, interactive: bool = False):
     with console.status(status="Generating commit message...", spinner='aesthetic'):
+        comment_prompt = get_prompt()
         model = Model(purpose_prompt=comment_prompt)
         response = model.get_response(prompt=diff_str)
     
     return response
+
 
 def comment_interactive(msg: str, diff_str: str) -> str:
     """

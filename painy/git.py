@@ -1,7 +1,7 @@
 from typing import List
 import subprocess
 import re
-from painy.utils import get_package_path, get_valid_extensions
+from painy.utils import get_package_path, load_valid_extensions
 from painy.errors import *
 
 
@@ -18,7 +18,7 @@ def get_changed_files(staged=False) -> List[str]:
     except subprocess.CalledProcessError:
         raise GitDiffException()
     
-    valid_extensions = get_valid_extensions()
+    valid_extensions = load_valid_extensions()
      
     changed_files = [file for file in changed_files if file != '']
     changed_files = [file for file in changed_files if f".{file.split('.')[-1]}" in valid_extensions]
@@ -67,6 +67,13 @@ def get_diff_str(changed_files: List[str]) -> str:
         diffs.append(diff)
     
     return "\n".join(diffs)
+
+def get_commit_messsage_history() -> List[str]:
+    output = subprocess.check_output(["git", "log", "--pretty=format:\"%s\""], stderr=subprocess.STDOUT)
+    messages = output.decode("utf-8").strip().split("\n")
+    messages = [message.strip("\"") for message in messages]
+    
+    return messages
 
 def commit(commit_message: str) -> None:
     """
