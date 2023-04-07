@@ -1,8 +1,9 @@
 from painy.git import *
 from painy.chat import Model
 from painy import console
-from painy.utils import print_commit_message, load_json, load_txt, process_rules
+from painy.utils import print_commit_message, load_json, load_txt 
 from painy.errors import NoSettingException
+from painy.managers import ConfigManager, RulesManager
 
 
 def get_rules(config: dict):
@@ -16,13 +17,17 @@ def get_rules(config: dict):
    
  
 def get_prompt() -> str:
-    config = load_json("settings/config.json")
-    
     prompt = load_txt('settings/prompt_comment_base.txt')
-    prompt += get_rules(config)
+    config_manager = ConfigManager()
+    rules_manager = RulesManager()
+    rules = rules_manager.get_rules(config_manager.config_dict)
     
-    if 'use_commit_history_style' in config and config['use_commit_history_style']:
-        max_num_commits = config['max_num_commits_style'] if 'max_num_commits_style' in config else 20
+    rules_str = '\n\nFollow this rules/restrictions when writing commit messages:\n'
+    rules_str += '\n'.join([f'- {rule.strip()}' for rule in rules])
+    
+    if config_manager.get_option('use_commit_history_style'):
+        max_num_commits = config_manager.get_option('max_num_commits_style')
+        max_num_commits = max_num_commits if max_num_commits is not None else 20
         commit_history = get_commit_messsage_history()[:max_num_commits]
         
         style_prompt = load_txt('settings/prompt_commit_style.txt')
